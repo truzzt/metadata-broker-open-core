@@ -45,7 +45,7 @@
         <dependency>
             <groupId>de.fraunhofer.iais.eis.ids</groupId>
             <artifactId>open-broker-common</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

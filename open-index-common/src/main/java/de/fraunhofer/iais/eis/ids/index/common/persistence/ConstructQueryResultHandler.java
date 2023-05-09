@@ -5,6 +5,7 @@ import de.fraunhofer.iais.eis.Participant;
 import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.ids.component.core.RejectMessageException;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.iais.eis.ids.jsonld.SerializerFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
@@ -31,8 +32,7 @@ public class ConstructQueryResultHandler {
      */
     public static Participant GraphQueryResultToParticipant(Model result) throws RejectMessageException {
 
-        Serializer s = new Serializer();
-
+        Serializer s = SerializerFactory.getInstance();
         try {
             return s.deserialize(graphToString(result), Participant.class);
         }
@@ -50,7 +50,7 @@ public class ConstructQueryResultHandler {
      * @throws RejectMessageException if the passed result is empty or the serializer encounters an exception
      */
     public static Connector GraphQueryResultToConnector(Model result) throws RejectMessageException {
-        Serializer s = new Serializer();
+        Serializer s = SerializerFactory.getInstance();
 
         logger.info("Starting deserialization");
 

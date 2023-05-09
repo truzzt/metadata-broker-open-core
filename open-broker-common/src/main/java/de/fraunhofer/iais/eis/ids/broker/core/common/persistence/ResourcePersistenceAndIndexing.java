@@ -9,6 +9,7 @@ import de.fraunhofer.iais.eis.ids.component.core.RejectMessageException;
 import de.fraunhofer.iais.eis.ids.index.common.persistence.*;
 import de.fraunhofer.iais.eis.ids.index.common.persistence.spi.Indexing;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.iais.eis.ids.jsonld.SerializerFactory;
 import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
@@ -49,6 +50,7 @@ public class ResourcePersistenceAndIndexing extends ResourcePersistenceAdapter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final Serializer serializer = SerializerFactory.getInstance();
 
     /**
      * Constructor
@@ -188,7 +190,7 @@ public class ResourcePersistenceAndIndexing extends ResourcePersistenceAdapter {
             //Rewrite resource
             logger.info("Serialize rewritten Resource"); start = System.currentTimeMillis();
             SelfDescriptionPersistenceAndIndexing.replacedIds = new HashMap<>(); //Clear the map tracking all URIs that were replaced
-            resource = new Serializer().deserialize( //Parse to Java Class
+            resource = serializer.deserialize( //Parse to Java Class
                     SelfDescriptionPersistenceAndIndexing.addSameAsStatements( //Add owl:sameAs statements for all URIs we are replacing
                             SelfDescriptionPersistenceAndIndexing.rewriteResource(resource.toRdf(), resource, catalogUri)), //Replace URIs
                     Resource.class); //Result of parsing should be a Resource

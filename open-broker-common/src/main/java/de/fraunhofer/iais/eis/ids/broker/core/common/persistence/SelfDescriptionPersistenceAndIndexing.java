@@ -6,6 +6,7 @@ import de.fraunhofer.iais.eis.ids.component.core.RejectMessageException;
 import de.fraunhofer.iais.eis.ids.index.common.persistence.*;
 import de.fraunhofer.iais.eis.ids.index.common.persistence.spi.Indexing;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.iais.eis.ids.jsonld.SerializerFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -29,6 +30,8 @@ public class SelfDescriptionPersistenceAndIndexing extends SelfDescriptionPersis
 
     private final Logger logger = LoggerFactory.getLogger(SelfDescriptionPersistenceAndIndexing.class);
     private final ConnectorModelCreator connectorModelCreator = new ConnectorModelCreator();
+
+    private final Serializer serializer = SerializerFactory.getInstance();
 
     private int maxNumberOfIndexedConnectorResources;
 
@@ -326,7 +329,7 @@ public class SelfDescriptionPersistenceAndIndexing extends SelfDescriptionPersis
 
         //Rewrite URI of the connector
         URI infrastructureComponentUri = rewriteConnectorUri(infrastructureComponent.getId());
-        String currentString = new Serializer().serialize(infrastructureComponent);
+        String currentString = serializer.serialize(infrastructureComponent);
         currentString = doReplace(currentString, infrastructureComponent.getId(), infrastructureComponentUri);
 
         //If connector is holding catalogs, rewrite them and their contents
@@ -348,7 +351,7 @@ public class SelfDescriptionPersistenceAndIndexing extends SelfDescriptionPersis
             }
         }
         //Now that we replaced all the IDs, add owl:sameAs statements and then parse
-        return new Serializer().deserialize(addSameAsStatements(currentString), InfrastructureComponent.class);
+        return serializer.deserialize(addSameAsStatements(currentString), InfrastructureComponent.class);
     }
 
     /**

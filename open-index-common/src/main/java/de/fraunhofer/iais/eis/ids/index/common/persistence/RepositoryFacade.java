@@ -6,6 +6,7 @@ import de.fraunhofer.iais.eis.RejectionReason;
 import de.fraunhofer.iais.eis.ids.component.core.RejectMessageException;
 import de.fraunhofer.iais.eis.ids.index.common.util.FusekiConnectionFactory;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.iais.eis.ids.jsonld.SerializerFactory;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.*;
@@ -44,6 +45,8 @@ public class RepositoryFacade {
     private String sparqlUrl;
     private Dataset dataset;
     private FusekiConnectionFactory connectionFactory, connectionFactoryReadOnly;
+
+    private final Serializer serializer = SerializerFactory.getInstance();
 
     private static boolean writableConnectionWarningPrinted = false;
 
@@ -628,9 +631,8 @@ public class RepositoryFacade {
             RDFWriter writer = RDFWriter.create().format(RDFFormat.JSONLD).source(result).build();
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             writer.output(os);
-            Serializer s = new Serializer();
             String output = os.toString();
-            return s.deserialize(output, Connector.class);
+            return serializer.deserialize(output, Connector.class);
         }
         catch (ARQException e)
         {

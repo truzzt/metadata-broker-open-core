@@ -5,6 +5,7 @@ import de.fraunhofer.iais.eis.ResourceCatalog;
 import de.fraunhofer.iais.eis.ResourceCatalogBuilder;
 import de.fraunhofer.iais.eis.ids.component.core.RejectMessageException;
 import de.fraunhofer.iais.eis.ids.jsonld.Serializer;
+import de.fraunhofer.iais.eis.ids.jsonld.SerializerFactory;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ public class CatalogProvider {
     Logger logger = LoggerFactory.getLogger(CatalogProvider.class);
     RepositoryFacade repositoryFacade;
     String catalogUri;
+
+    private final Serializer serializer = SerializerFactory.getInstance();
 
     /**
      * The single constructor of this class
@@ -67,7 +70,7 @@ public class CatalogProvider {
             Model result = repositoryFacade.constructQuery(queryString.toString());
 
             //Transform the result to a collection, then turn it into JSON-LD and give it to the serializer for parsing
-            return new Serializer().deserialize(ConstructQueryResultHandler.graphToString(result), ResourceCatalog.class);
+            return serializer.deserialize(ConstructQueryResultHandler.graphToString(result), ResourceCatalog.class);
         }
         catch (Exception e)
         {
